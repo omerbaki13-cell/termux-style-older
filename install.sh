@@ -9,6 +9,14 @@ PANEL_DEST="$HOME/.panel.sh"
 BASHRC="$HOME/.bashrc"
 MARKER="# >>> hizli-islem-paneli >>>"
 
+echo "📦 Bağımlılıklar kontrol ediliyor / kuruluyor..."
+pkg update -y
+
+command -v mpv >/dev/null 2>&1 || { echo "🎵 mpv kuruluyor..."; pkg install mpv -y; }
+command -v figlet >/dev/null 2>&1 || { echo "🔤 figlet kuruluyor..."; pkg install figlet -y; }
+
+echo "✅ Bağımlılıklar hazır."
+
 echo "📦 Panel kuruluyor..."
 
 if [ ! -f "$PANEL_SRC" ]; then
@@ -34,5 +42,6 @@ else
     echo "ℹ️ .bashrc zaten kurulu, tekrar eklenmedi."
 fi
 
+echo ""
 echo "✅ Kurulum tamamlandı! Yeni terminal aç ya da şunu çalıştır:"
 echo "   source ~/.bashrc"
