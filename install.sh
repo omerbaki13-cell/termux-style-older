@@ -10,10 +10,16 @@ BASHRC="$HOME/.bashrc"
 MARKER="# >>> hizli-islem-paneli >>>"
 
 echo "📦 Bağımlılıklar kontrol ediliyor / kuruluyor..."
-pkg update -y
+apt update -y
+apt upgrade -y
 
-command -v mpv >/dev/null 2>&1 || { echo "🎵 mpv kuruluyor..."; pkg install mpv -y; }
+if ! command -v figlet >/dev/null 2>&1 || ! command -v yt-dlp >/dev/null 2>&1; then
+    echo -e "\033[1;33m⏳ Styling İçin Gereken Paketler Yükleniyor... Tahmini Bekleme: 5 Dakika\033[0m"
+    sleep 3
+fi
+
 command -v figlet >/dev/null 2>&1 || { echo "🔤 figlet kuruluyor..."; pkg install figlet -y; }
+command -v yt-dlp >/dev/null 2>&1 || { echo "🎵 yt-dlp kuruluyor..."; pkg install yt-dlp -y; }
 
 echo "✅ Bağımlılıklar hazır."
 
