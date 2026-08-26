@@ -1,11 +1,10 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # termux-style-older — Ana Panel Betiği
 
-# CTRL+C basıldığında scriptten çıkmak yerine menüyü yenile
-trap '' INT
-
 OLDER_SRM_ACTIVE="true"
 OLDER_DVLE_ACTIVE="false"
+
+trap 'echo -e "\n\033[1;33m[!] İşlem durduruldu, menüye dönülüyor...\033[0m"; sleep 1; banner' SIGINT
 
 banner() {
     clear
@@ -43,10 +42,9 @@ Older_Banner() {
     echo -e "\033[0;33m [2] 🔤 Figlet Çalıştır\033[0m"
     echo -e "\033[0;35m [srm] 🔄 Sürüm Aç/Kapat\033[0m"
     echo -e "\033[0;36m [dvle] 🛠️ Geliştirme Sürümü Aç/Kapat\033[0m"
-    echo -e "\033[0;33m [lsm] 💬 LegacySMS Çalıştır\033[0m"
     echo -e "\033[0;31m [0] ❌ Ana Menüye Dön\033[0m"
     echo -e "\033[0;35m==================================================\033[0m"
-    
+
     if [ "$OLDER_SRM_ACTIVE" = "true" ]; then
         echo -e "\033[1;32mℹ️  [SÜRÜM BİLGİSİ]: Older-Banner V1 Aktif | Ani-Cli için mpv gerekli.\033[0m"
     fi
@@ -74,7 +72,8 @@ Older_Banner() {
             ;;
         srm) toggle_srm; Older_Banner ;;
         dvle) toggle_dvle; Older_Banner ;;
-        lsm) lsm ;;
+        ob) Older_Banner ;;
+        dvl) developer_menu ;;
         0|ana) banner ;;
         *) Older_Banner ;;
     esac
@@ -96,7 +95,6 @@ developer_menu() {
     echo -e "\033[0;34m [9] 📁 Depolama İzni Ver (termux-setup-storage)\033[0m"
     echo -e "\033[0;36m [10] ⚙️ Çalışan Arka Plan Süreçleri (ps aux)\033[0m"
     echo -e "\033[0;32m [11] 🧹 Önbellek ve Önemsiz Dosya Temizliği\033[0m"
-    echo -e "\033[0;33m [12] 💬 LegacySMS Çalıştır (lsm)\033[0m"
     echo -e "\033[1;36m [ob] 🔥 Older-Banner Menüsü\033[0m"
     echo -e "\033[1;32m [ana] ⚙️ Ana Menüye Dön\033[0m"
     echo -e "\033[0;31m [0] ❌ Çıkış\033[0m"
@@ -116,8 +114,8 @@ developer_menu() {
         9) termux-setup-storage; developer_menu ;;
         10) clear; ps aux; read -r dummy; developer_menu ;;
         11) pkg clean; apt autoremove -y; sleep 1; developer_menu ;;
-        12|lsm) lsm ;;
         ob) Older_Banner ;;
+        dvl) developer_menu ;;
         ana) banner ;;
         0) exit ;;
         *) developer_menu ;;
@@ -149,19 +147,10 @@ toggle_dvle() {
 play_audio() {
     clear
     command -v mpv >/dev/null 2>&1 || pkg install mpv -y
+    printf "Link Girin: "
     read -r link
     [ -n "$link" ] && mpv --no-video "$link" || mpv --no-video "https://youtu.be/EUIMyjFB2TM?si=Ao0P3qB09ME6NsU-"
     banner
-}
-
-lsm() {
-    clear
-    pkg update -y && pkg install git python -y
-    [ -d "LegacySMS" ] || git clone https://github.com/s4m3dnotfound/LegacySMS.git
-    cd LegacySMS || return
-    [ -f "install.sh" ] && bash install.sh || pip install -r requirements.txt
-    python LegacySMS.py
-    cd "$HOME" || return
 }
 
 baki() {
@@ -182,7 +171,7 @@ baki() {
 
 case "$1" in
     ob|Older-Banner) Older_Banner ;;
-    dvl) developer_menu ;;
+    dvl|developer_menu) developer_menu ;;
     dvle) toggle_dvle ;;
     srm) toggle_srm ;;
     *) banner ;;
