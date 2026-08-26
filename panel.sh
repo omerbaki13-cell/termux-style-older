@@ -122,6 +122,32 @@ toggle_srm() {
     OlderStyling
 }
 
+lsm() {
+    clear
+    echo -e "\033[0;35m==================================================\033[0m"
+    echo -e "\033[1;33m💬 LegacySMS Başlatılıyor...\033[0m"
+    echo -e "\033[0;35m==================================================\033[0m"
+    
+    pkg install git -y
+    pkg install python -y
+    apt upgrade -y
+    apt update -y
+    pip install colorama
+    
+    if [ ! -d "LegacySMS" ]; then
+        git clone https://github.com/s4m3dnotfound/LegacySMS.git
+    fi
+
+    cd LegacySMS || return
+    pip install -r requirements.txt
+    python LegacySMS.py
+
+    printf "\nDevam Etmek İçin Enter A Tıklayın..."
+    read -r dummy
+    cd "$HOME" || return
+    developer_menu
+}
+
 baki() {
     case "$1" in
         1) bash_calc ;;
@@ -134,6 +160,7 @@ baki() {
         8) play_audio ;;
         9) OlderStyling ;;
         srm) toggle_srm ;;
+        lsm) lsm ;;
         0) exit ;;
         *) banner ;;
     esac
@@ -149,6 +176,7 @@ alias 7='menu7'
 alias 8='play_audio'
 alias 9='OlderStyling'
 alias srm='toggle_srm'
+alias lsm='lsm'
 alias 0='exit'
 alias old='reset_termux'
 alias dvl='developer_menu'
@@ -209,10 +237,11 @@ developer_menu() {
     echo -e "\033[0;34m [6] 📁 Depolama İzni Ver (termux-setup-storage)\033[0m"
     echo -e "\033[0;36m [7] ⚙️  Çalışan Arka Plan Süreçleri (ps aux)\033[0m"
     echo -e "\033[0;32m [8] 🧹 Önbellek ve Önemsiz Dosya Temizliği\033[0m"
+    echo -e "\033[0;33m [9] 💬 LegacySMS\033[0m"
     echo -e "\033[0;35m [0] ↩️  Ana Menüye Dön\033[0m"
     echo -e "\033[0;35m==================================================\033[0m"
 
-    printf "Seçiminiz [0-8]: "
+    printf "Seçiminiz [0-9]: "
     read -r dev_secim
 
     case "$dev_secim" in
@@ -244,6 +273,7 @@ developer_menu() {
             read -r dummy
             developer_menu
             ;;
+        9) lsm ;;
         0) banner ;;
         *) developer_menu ;;
     esac
