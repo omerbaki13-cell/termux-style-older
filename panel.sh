@@ -1,6 +1,9 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # termux-style-older — Ana Panel Betiği
 
+# CTRL+C basıldığında scriptten çıkmak yerine menüyü yenile
+trap '' INT
+
 OLDER_SRM_ACTIVE="true"
 OLDER_DVLE_ACTIVE="false"
 
@@ -25,6 +28,8 @@ banner() {
     case "$m_sec" in
         ob|Older-Banner) Older_Banner ;;
         dvl) developer_menu ;;
+        dvle) toggle_dvle; banner ;;
+        srm) toggle_srm; banner ;;
         *) baki "$m_sec" ;;
     esac
 }
@@ -100,9 +105,9 @@ developer_menu() {
     read -r dev_secim
 
     case "$dev_secim" in
-        1) pkg install figlet neofetch ani-cli python mpv bc -y; Older_Banner ;;
-        2) toggle_srm; developer_menu ;;
-        3) toggle_dvle; developer_menu ;;
+        1) pkg install figlet neofetch ani-cli python mpv bc -y; developer_menu ;;
+        2|srm) toggle_srm; developer_menu ;;
+        3|dvle) toggle_dvle; developer_menu ;;
         4) play_audio ;;
         5) OlderStyling ;;
         6) clear; echo -e "\033[1;32mV1 Sürüm Bilgisi Aktif\033[0m"; read -r dummy; developer_menu ;;
@@ -111,7 +116,7 @@ developer_menu() {
         9) termux-setup-storage; developer_menu ;;
         10) clear; ps aux; read -r dummy; developer_menu ;;
         11) pkg clean; apt autoremove -y; sleep 1; developer_menu ;;
-        12) lsm ;;
+        12|lsm) lsm ;;
         ob) Older_Banner ;;
         ana) banner ;;
         0) exit ;;
@@ -120,12 +125,24 @@ developer_menu() {
 }
 
 toggle_srm() {
-    [ "$OLDER_SRM_ACTIVE" = "true" ] && OLDER_SRM_ACTIVE="false" || OLDER_SRM_ACTIVE="true"
+    if [ "$OLDER_SRM_ACTIVE" = "true" ]; then
+        OLDER_SRM_ACTIVE="false"
+        echo -e "\033[1;31m❌ Sürüm Bilgisi Kapatıldı!\033[0m"
+    else
+        OLDER_SRM_ACTIVE="true"
+        echo -e "\033[1;32m✅ Sürüm Bilgisi Aktifleşti!\033[0m"
+    fi
     sleep 1
 }
 
 toggle_dvle() {
-    [ "$OLDER_DVLE_ACTIVE" = "true" ] && OLDER_DVLE_ACTIVE="false" || OLDER_DVLE_ACTIVE="true"
+    if [ "$OLDER_DVLE_ACTIVE" = "true" ]; then
+        OLDER_DVLE_ACTIVE="false"
+        echo -e "\033[1;31m❌ Geliştirme Sürümü Kapatıldı!\033[0m"
+    else
+        OLDER_DVLE_ACTIVE="true"
+        echo -e "\033[1;32m✅ Geliştirme Sürümü Aktifleşti!\033[0m"
+    fi
     sleep 1
 }
 
