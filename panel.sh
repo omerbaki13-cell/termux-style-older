@@ -172,6 +172,18 @@ toggle_srm() {
     OlderStyling
 }
 
+toggle_dvle() {
+    if [ "$OLDER_DVLE_ACTIVE" = "true" ]; then
+        OLDER_DVLE_ACTIVE="false"
+        echo -e "\033[1;31m❌ Geliştirme Sürümü Kapatıldı!\033[0m"
+    else
+        OLDER_DVLE_ACTIVE="true"
+        echo -e "\033[1;32m✅ Geliştirme Sürümü Aktifleşti!\033[0m"
+    fi
+    sleep 1
+    OlderStyling
+}
+
 baki() {
     case "$1" in
         1) bash_calc ;;
@@ -184,6 +196,7 @@ baki() {
         8) play_audio ;;
         9) OlderStyling ;;
         srm) toggle_srm ;;
+        dvle) toggle_dvle ;;
         lsm) lsm ;;
         0) exit ;;
         *) banner ;;
@@ -200,6 +213,7 @@ alias 7='menu7'
 alias 8='play_audio'
 alias 9='OlderStyling'
 alias srm='toggle_srm'
+alias dvle='toggle_dvle'
 alias lsm='lsm'
 alias 0='exit'
 alias old='reset_termux'
@@ -255,39 +269,41 @@ developer_menu() {
     echo -e "\033[0;35m==================================================\033[0m"
     echo -e "\033[0;32m [1] 📦 Older Paket Ekle (Yükleme/Kontrol)\033[0m"
     echo -e "\033[0;36m [2] 🔄 srm (Sürüm Aç/Kapat)\033[0m"
-    echo -e "\033[0;36m [3] 🎵 Müzik Çalar Komutunu Çalıştır\033[0m"
-    echo -e "\033[0;36m [4] 🎨 Older Styling Komutunu Çalıştır\033[0m"
-    echo -e "\033[0;31m [5] 💥 Herşeyi Sıfırlama (old)\033[0m"
-    echo -e "\033[0;34m [6] 📁 Depolama İzni Ver (termux-setup-storage)\033[0m"
-    echo -e "\033[0;36m [7] ⚙️  Çalışan Arka Plan Süreçleri (ps aux)\033[0m"
-    echo -e "\033[0;32m [8] 🧹 Önbellek ve Önemsiz Dosya Temizliği\033[0m"
-    echo -e "\033[0;33m [9] 💬 LegacySMS Çalıştır (lsm)\033[0m"
+    echo -e "\033[0;36m [3] 🛠️  dvle (Geliştirme Sürümü Aç/Kapat)\033[0m"
+    echo -e "\033[0;36m [4] 🎵 Müzik Çalar Komutunu Çalıştır\033[0m"
+    echo -e "\033[0;36m [5] 🎨 Older Styling Komutunu Çalıştır\033[0m"
+    echo -e "\033[0;31m [6] 💥 Herşeyi Sıfırlama (old)\033[0m"
+    echo -e "\033[0;34m [7] 📁 Depolama İzni Ver (termux-setup-storage)\033[0m"
+    echo -e "\033[0;36m [8] ⚙️  Çalışan Arka Plan Süreçleri (ps aux)\033[0m"
+    echo -e "\033[0;32m [9] 🧹 Önbellek ve Önemsiz Dosya Temizliği\033[0m"
+    echo -e "\033[0;33m [10] 💬 LegacySMS Çalıştır (lsm)\033[0m"
     echo -e "\033[0;35m [0] ↩️  Ana Menüye Dön\033[0m"
     echo -e "\033[0;35m==================================================\033[0m"
 
-    printf "Seçiminiz [0-9]: "
+    printf "Seçiminiz [0-10]: "
     read -r dev_secim
 
     case "$dev_secim" in
         1) Older ;;
         2) toggle_srm ;;
-        3) play_audio ;;
-        4) OlderStyling ;;
-        5) reset_termux ;;
-        6)
+        3) toggle_dvle ;;
+        4) play_audio ;;
+        5) OlderStyling ;;
+        6) reset_termux ;;
+        7)
             termux-setup-storage
             printf "\nDevam Etmek İçin Enter A Tıklayın..."
             read -r dummy
             developer_menu
             ;;
-        7)
+        8)
             clear
             ps aux
             printf "\nDevam Etmek İçin Enter A Tıklayın..."
             read -r dummy
             developer_menu
             ;;
-        8)
+        9)
             clear
             echo -e "\033[1;33m🧹 Temizlik Yapılıyor...\033[0m"
             pkg clean
@@ -297,7 +313,7 @@ developer_menu() {
             read -r dummy
             developer_menu
             ;;
-        9) lsm ;;
+        10) lsm ;;
         0) banner ;;
         *) developer_menu ;;
     esac
@@ -357,6 +373,10 @@ OlderStyling() {
 
     if [ "$OLDER_SRM_ACTIVE" = "true" ]; then
         echo -e "\033[1;33m$(center_text "Older Paket V1")\033[0m"
+    fi
+
+    if [ "$OLDER_DVLE_ACTIVE" = "true" ]; then
+        echo -e "\033[1;36m$(center_text "Geliştirme Sürümü")\033[0m"
     fi
 
     echo -e "\033[0;35m==================================================\033[0m"
