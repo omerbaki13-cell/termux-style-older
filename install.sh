@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-# install.sh — Hızlı İşlem Paneli kurulum scripti
+# install.sh — termux-style-older Kurulum Scripti
 
 set -e
 
@@ -7,27 +7,32 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PANEL_SRC="$REPO_DIR/panel.sh"
 PANEL_DEST="$HOME/.panel.sh"
 BASHRC="$HOME/.bashrc"
-MARKER="# >>> hizli-islem-paneli >>>"
+MARKER="# >>> termux-style-older >>>"
 
-echo "📦 Bağımlılıklar kontrol ediliyor / kuruluyor..."
-apt update -y
-apt upgrade -y
+echo -e "\033[1;36m📦 Bağımlılıklar kontrol ediliyor ve güncelleniyor...\033[0m"
+pkg update -y && pkg upgrade -y
 
-if ! command -v figlet >/dev/null 2>&1 || ! command -v mpv >/dev/null 2>&1 || ! command -v yt-dlp >/dev/null 2>&1; then
-    echo -e "\033[1;33m⏳ Styling İçin Gereken Paketler Yükleniyor... Tahmini Bekleme: 5 Dakika\033[0m"
-    sleep 3
+echo -e "\033[1;33m⏳ Gerekli temel paketler kuruluyor...\033[0m"
+
+# Temel bağımlılık kontrolü ve toplu kurulum
+NEEDED_PKGS=()
+command -v figlet >/dev/null 2>&1 || NEEDED_PKGS+=(figlet)
+command -v mpv >/dev/null 2>&1 || NEEDED_PKGS+=(mpv)
+command -v yt-dlp >/dev/null 2>&1 || NEEDED_PKGS+=(yt-dlp)
+command -v bc >/dev/null 2>&1 || NEEDED_PKGS+=(bc)
+command -v neofetch >/dev/null 2>&1 || NEEDED_PKGS+=(neofetch)
+
+if [ ${#NEEDED_PKGS[@]} -gt 0 ]; then
+    echo -e "\033[0;32m[+] Eksik paketler yükleniyor: ${NEEDED_PKGS[*]}\033[0m"
+    pkg install "${NEEDED_PKGS[@]}" -y
 fi
 
-command -v figlet >/dev/null 2>&1 || { echo "🔤 figlet kuruluyor..."; pkg install figlet -y; }
-command -v mpv >/dev/null 2>&1 || { echo "🎵 mpv kuruluyor..."; pkg install mpv -y; }
-command -v yt-dlp >/dev/null 2>&1 || { echo "🔗 yt-dlp kuruluyor..."; pkg install yt-dlp -y; }
+echo -e "\033[1;32m✅ Bağımlılıklar hazır.\033[0m"
 
-echo "✅ Bağımlılıklar hazır."
-
-echo "📦 Panel kuruluyor..."
+echo -e "\033[1;36m📦 Panel dosyaları kopyalanıyor...\033[0m"
 
 if [ ! -f "$PANEL_SRC" ]; then
-    echo "❌ panel.sh bulunamadı: $PANEL_SRC"
+    echo -e "\033[1;31m❌ panel.sh bulunamadı: $PANEL_SRC\033[0m"
     exit 1
 fi
 
@@ -41,14 +46,14 @@ if ! grep -q "$MARKER" "$BASHRC" 2>/dev/null; then
         echo ""
         echo "$MARKER"
         echo "source \"\$HOME/.panel.sh\""
-        echo "banner"
-        echo "# <<< hizli-islem-paneli <<<"
+        echo "# <<< termux-style-older <<<"
     } >> "$BASHRC"
-    echo "✅ .bashrc güncellendi."
+    echo -e "\033[1;32m✅ .bashrc güncellendi.\033[0m"
 else
-    echo "ℹ️ .bashrc zaten kurulu, tekrar eklenmedi."
+    echo -e "\033[1;33mℹ️ .bashrc zaten yapılandırılmış, tekrar eklenmedi.\033[0m"
 fi
 
 echo ""
-echo "✅ Kurulum tamamlandı! Yeni terminal aç ya da şunu çalıştır:"
-echo "   source ~/.bashrc"
+echo -e "\033[1;32m🎉 Kurulum tamamlandı!\033[0m"
+echo -e "\033[1;36mPaneli hemen başlatmak için aşağıdaki komutu çalıştırabilirsin:\033[0m"
+echo -e "\033[1;33msource ~/.bashrc && banner\033[0m"
