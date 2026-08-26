@@ -1,4 +1,4 @@
-cat << 'EOF' > ~/.panel.sh
+cat << 'EOF' > panel.sh
 #!/data/data/com.termux/files/usr/bin/bash
 # termux-style-older — Saf Alias Tabanlı Terminal Paneli
 
@@ -165,8 +165,9 @@ menu4() {
     banner
 }
 
+# 5. Seçenek: Bulunduğunuz klasördeki (proje dizini) notes.txt dosyasını açar
 menu5() {
-    local NOTES="$HOME/notes.txt"
+    local NOTES="./notes.txt"
     [ -f "$NOTES" ] || touch "$NOTES"
     if command -v nano >/dev/null 2>&1; then
         nano "$NOTES"
@@ -223,7 +224,7 @@ play_audio() {
         read -r dummy
         banner
         return
-    fi
+    }
     
     echo -e "\033[0;35m==================================================\033[0m"
     echo -e "\033[1;36m🎵 MÜZİK ÇALAR MENÜSÜ\033[0m"
