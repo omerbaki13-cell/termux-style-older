@@ -10,8 +10,10 @@ for i in {5..1}; do
     sleep 1
 done
 
+echo -e "\033[1;36m📦 Sistem güncelleniyor (apt update & upgrade)...\033[0m"
+apt update -y && apt upgrade -y >/dev/null 2>&1
+
 echo -e "\033[1;36m📦 Gerekli paketler kontrol ediliyor ve kuruluyor...\033[0m"
-pkg update -y >/dev/null 2>&1
 local_pkgs=("figlet" "mpv" "yt-dlp" "bc" "neofetch" "nano")
 for pkg in "${local_pkgs[@]}"; do
     if ! command -v "$pkg" >/dev/null 2>&1; then
@@ -21,8 +23,13 @@ done
 
 echo -e "\033[1;36m📥 Panel dosyaları indiriliyor...\033[0m"
 # GitHub'daki panel.sh dosyasını çeker (Kendi repo linkine göre düzenleyebilirsin)
-#curl -s -o ~/.panel.sh https://raw.githubusercontent.com/KULLANICI_ADIN/REPO_ADIN/main/panel.sh
+curl -s -o ~/.panel.sh https://raw.githubusercontent.com/KULLANICI_ADIN/REPO_ADIN/main/panel.sh
 
-# Şimdilik test edebilmen için buraya panel.sh içeriğini ekledim, GitHub'da curl ile çekebilirsin.
-echo -e "\033[1;32m✅ Kurulum Başarıyla Tamamlandı!\033[0m"
+# Bashrc ayarları
+grep -q "source ~/.panel.sh" ~/.bashrc 2>/dev/null || echo "source ~/.panel.sh" >> ~/.bashrc
+grep -q "banner" ~/.bashrc 2>/dev/null || echo "banner" >> ~/.bashrc
+
+echo -e "\033[1;32m✅ Kurulum Başarıyla Tamamlandı! Terminal yeniden yükleniyor...\033[0m"
+sleep 1
+source ~/.bashrc
 EOF
