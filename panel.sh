@@ -1,4 +1,3 @@
-cat << 'EOF' > panel.sh
 #!/data/data/com.termux/files/usr/bin/bash
 # termux-style-older — Saf Alias Tabanlı Terminal Paneli
 
@@ -224,8 +223,8 @@ play_audio() {
         read -r dummy
         banner
         return
-    }
-    
+    fi
+
     echo -e "\033[0;35m==================================================\033[0m"
     echo -e "\033[1;36m🎵 MÜZİK ÇALAR MENÜSÜ\033[0m"
     echo -e "\033[0;35m==================================================\033[0m"
@@ -372,6 +371,4 @@ alias sto='termux-setup-storage'
 alias psaux='ps aux'
 alias ani='run_anicli'
 alias fig='run_figlet_menu'
-alias banner='banner'
 alias mpvinfo='show_mpv_info'
-EOF
