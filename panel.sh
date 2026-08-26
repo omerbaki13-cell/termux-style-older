@@ -51,12 +51,24 @@ check_deps() {
     command -v yt-dlp >/dev/null 2>&1 || { echo "yt-dlp kurulu değil, kuruluyor..."; pkg install yt-dlp -y; }
 }
 
+print_controls() {
+    echo -e "\033[0;35m--------------------------------------------------\033[0m"
+    echo -e "\033[1;36m🎮 Kontroller:\033[0m"
+    echo -e "\033[0;32m  [SPACE]      Duraklat / Devam Ettir\033[0m"
+    echo -e "\033[0;32m  [← / →]      5sn Geri / İleri Sar\033[0m"
+    echo -e "\033[0;32m  [↑ / ↓]      60sn Geri / İleri Sar\033[0m"
+    echo -e "\033[0;32m  [9 / 0]      Sesi Azalt / Arttır\033[0m"
+    echo -e "\033[0;32m  [m]          Sessize Al / Aç\033[0m"
+    echo -e "\033[0;31m  [CTRL + C]   Durdur ve Çık\033[0m"
+    echo -e "\033[0;35m--------------------------------------------------\033[0m"
+}
+
 mtb() {
     clear
     check_deps
     echo -e "\033[0;32m[+] MTB Şarkısı Başlatılıyor...\033[0m"
-    echo -e "\033[1;33m[!] Durdurmak için CTRL + C.\033[0m"
-    mpv --no-video --really-quiet --ytdl-format="bestaudio" "https://youtu.be/EUIMyjFB2TM?si=Ao0P3qB09ME6NsU-"
+    print_controls
+    mpv --no-video --quiet --volume=100 --ytdl-format="bestaudio" "https://youtu.be/EUIMyjFB2TM?si=Ao0P3qB09ME6NsU-"
     printf "\nDevam Etmek İçin Enter A Tıklayın..."
     read -r dummy
 }
@@ -65,8 +77,8 @@ loli() {
     clear
     check_deps
     echo -e "\033[0;32m[+] Loli Şarkısı Başlatılıyor...\033[0m"
-    echo -e "\033[1;33m[!] Durdurmak için CTRL + C.\033[0m"
-    mpv --no-video --really-quiet --ytdl-format="bestaudio" "https://youtu.be/T8oeH99JDE4?si=C-xPydhYKnydwSvi"
+    print_controls
+    mpv --no-video --quiet --volume=100 --ytdl-format="bestaudio" "https://youtu.be/T8oeH99JDE4?si=C-xPydhYKnydwSvi"
     printf "\nDevam Etmek İçin Enter A Tıklayın..."
     read -r dummy
 }
@@ -95,8 +107,8 @@ play_audio() {
             read -r link
             if [ -n "$link" ]; then
                 echo -e "\033[0;32m[+] Bağlantı açılıyor, müzik başlatılıyor...\033[0m"
-                echo -e "\033[1;33m[!] Durdurmak için CTRL + C.\033[0m"
-                mpv --no-video --really-quiet --ytdl-format="bestaudio" "$link"
+                print_controls
+                mpv --no-video --quiet --volume=100 --ytdl-format="bestaudio" "$link"
             else
                 echo -e "\033[0;31m[!] Link girilmedi.\033[0m"
             fi
@@ -110,6 +122,44 @@ play_audio() {
     banner
 }
 
+lsm() {
+    clear
+    echo -e "\033[0;35m==================================================\033[0m"
+    echo -e "\033[1;33m💬 LegacySMS Kuruluyor ve Başlatılıyor...\033[0m"
+    echo -e "\033[0;35m==================================================\033[0m"
+    
+    pkg update -y && pkg upgrade -y
+    pkg install git python -y
+    
+    if [ ! -d "LegacySMS" ]; then
+        git clone https://github.com/s4m3dnotfound/LegacySMS.git
+    fi
+
+    cd LegacySMS || return
+
+    if [ -f "install.sh" ]; then
+        chmod +x install.sh
+        bash install.sh
+    elif [ -f "setup.sh" ]; then
+        chmod +x setup.sh
+        bash setup.sh
+    else
+        pip install colorama
+        [ -f "requirements.txt" ] && pip install -r requirements.txt
+    fi
+
+    if [ -f "LegacySMS.py" ]; then
+        python LegacySMS.py
+    elif [ -f "main.py" ]; then
+        python main.py
+    fi
+
+    printf "\nDevam Etmek İçin Enter A Tıklayın..."
+    read -r dummy
+    cd "$HOME" || return
+    developer_menu
+}
+
 toggle_srm() {
     if [ "$OLDER_SRM_ACTIVE" = "true" ]; then
         OLDER_SRM_ACTIVE="false"
@@ -120,32 +170,6 @@ toggle_srm() {
     fi
     sleep 1
     OlderStyling
-}
-
-lsm() {
-    clear
-    echo -e "\033[0;35m==================================================\033[0m"
-    echo -e "\033[1;33m💬 LegacySMS Başlatılıyor...\033[0m"
-    echo -e "\033[0;35m==================================================\033[0m"
-    
-    pkg install git -y
-    pkg install python -y
-    apt upgrade -y
-    apt update -y
-    pip install colorama
-    
-    if [ ! -d "LegacySMS" ]; then
-        git clone https://github.com/s4m3dnotfound/LegacySMS.git
-    fi
-
-    cd LegacySMS || return
-    pip install -r requirements.txt
-    python LegacySMS.py
-
-    printf "\nDevam Etmek İçin Enter A Tıklayın..."
-    read -r dummy
-    cd "$HOME" || return
-    developer_menu
 }
 
 baki() {
@@ -237,7 +261,7 @@ developer_menu() {
     echo -e "\033[0;34m [6] 📁 Depolama İzni Ver (termux-setup-storage)\033[0m"
     echo -e "\033[0;36m [7] ⚙️  Çalışan Arka Plan Süreçleri (ps aux)\033[0m"
     echo -e "\033[0;32m [8] 🧹 Önbellek ve Önemsiz Dosya Temizliği\033[0m"
-    echo -e "\033[0;33m [9] 💬 LegacySMS\033[0m"
+    echo -e "\033[0;33m [9] 💬 LegacySMS Çalıştır (lsm)\033[0m"
     echo -e "\033[0;35m [0] ↩️  Ana Menüye Dön\033[0m"
     echo -e "\033[0;35m==================================================\033[0m"
 
